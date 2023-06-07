@@ -55,15 +55,18 @@ router.post('/register',(req,res) => {
     })
 })
 
-router.get('/team',expressJwt({secret:secret,algorithms:["HS256"]}),(req, res) => {
-    console.log('/team');
-    res.send("protected");
+router.get('/home',expressJwt({secret,algorithms:["HS256"]}),(req, res) => {
+    console.log('/home');
 })
 
 router.get('/logout',(req,res)=> {
     res.cookie('username',1,{
         maxAge:-1
     })
+})
+
+router.get('/user',(req, res)=>{
+
 })
 
 
