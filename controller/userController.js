@@ -61,9 +61,11 @@ router.get('/home',(req, res) => {
 
 router.get('/logout',
     (req,res)=> {
-    res.cookie('username',1,{
+    res.cookie('login_username',1,{
         maxAge:-1
-    })
+    });
+
+    res.send('退出登录~');
 })
 
 router.get('/user',
@@ -75,8 +77,8 @@ router.get('/user',
     });
 
         console.log(user.dataValues);
-        const {username,userAccount} = user.dataValues;
-        const value = {username,userAccount};
+        const {username,userAccount,avatarUrl} = user.dataValues;
+        const value = {username,userAccount,avatarUrl};
         res.send(value);
 })
 

@@ -1,5 +1,5 @@
 const {Sequelize, DataTypes} = require('sequelize');
-const sequelize = new Sequelize('show-db', 'root', '123456', {
+const sequelize = new Sequelize('show-db', 'root', 'root', {
     host: 'localhost',
     port: 3306,
     dialect: 'mysql',/* 选择 'mysql' | 'mariadb' | 'postgres' | 'mssql' 其一 */
@@ -38,7 +38,7 @@ const User = sequelize.define('users',{
     userAccount: {
         type: DataTypes.STRING
     },
-    avartarUrl:{
+    avatarUrl:{
         type:DataTypes.STRING
     },
     gender:{
