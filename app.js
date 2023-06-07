@@ -12,12 +12,12 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 // 解析 application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
-//使用express router
-app.use(userRouter);
 //跨域问题
 app.use(cors());
 //数据库连接
 db.connected();
+//使用express router
+app.use(userRouter);
 
 const port = 3000;
 app.listen(port, () => {

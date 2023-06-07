@@ -8,13 +8,14 @@ const {nanoid} = require('nanoid');
 
 const salt = bcrypt.genSaltSync(10);
 const secret = "WELCOME_TO_THE_SHOW";
+const MS_OF_DAY = 1000 * 60 * 60 * 24;
 
-/*
-router.use(expressJwt({
-    secret:'WELCOME_TO_THE_SHOW',
-    algorithms:['HS256']
-}))
-*/
+    /*
+    router.use(expressJwt({
+        secret:'WELCOME_TO_THE_SHOW',
+        algorithms:['HS256']
+    }))
+    */
 
 router.post('/login', async (req,res) => {
     const {username,password} = req.body;
@@ -29,8 +30,8 @@ router.post('/login', async (req,res) => {
     if(isMatch){
         console.log('isMatch',isMatch);
         const token = jwt.sign({username:username},secret);
-        res.cookie("username",username,{
-            maxAge:1000 * 24 * 60 * 60 * 7
+        res.cookie("login_username",username,{
+            maxAge:7 * MS_OF_DAY
         });
         res.send(token);
     }else {
@@ -55,9 +56,7 @@ router.post('/register',(req,res) => {
     })
 })
 
-router.get('/home',expressJwt({secret,algorithms:["HS256"]}),
-    (req, res) => {
-    console.log('/home');
+router.get('/home',(req, res) => {
 })
 
 router.get('/logout',
@@ -68,8 +67,17 @@ router.get('/logout',
 })
 
 router.get('/user',
-    (req, res)=>{
-        console.log('/user',req.body);
+    async (req, res)=>{
+    const {login_username} = req.cookies;
+    console.log('/user',req.cookies.username);
+    const user = await User.findOne({
+        where:{username:login_username},
+    });
+
+        console.log(user.dataValues);
+        const {username,userAccount} = user.dataValues;
+        const value = {username,userAccount};
+        res.send(value);
 })
 
 
