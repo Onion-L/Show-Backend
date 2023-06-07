@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const {db} = require('./config/db');
-const userRouter = require('./Controller/userController');
+const userRouter = require('./controller/userController');
 const cookieParser = require('cookie-parser');
 
 // 解析 application/json
