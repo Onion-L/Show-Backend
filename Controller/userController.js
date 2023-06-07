@@ -66,7 +66,7 @@ router.get('/logout',(req,res)=> {
 })
 
 router.get('/user',(req, res)=>{
-
+    res.send('Hello world');
 })
 
 
