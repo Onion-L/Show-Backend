@@ -55,18 +55,21 @@ router.post('/register',(req,res) => {
     })
 })
 
-router.get('/home',expressJwt({secret,algorithms:["HS256"]}),(req, res) => {
+router.get('/home',expressJwt({secret,algorithms:["HS256"]}),
+    (req, res) => {
     console.log('/home');
 })
 
-router.get('/logout',(req,res)=> {
+router.get('/logout',
+    (req,res)=> {
     res.cookie('username',1,{
         maxAge:-1
     })
 })
 
-router.get('/user',(req, res)=>{
-    res.send('Hello world');
+router.get('/user',
+    (req, res)=>{
+        console.log('/user',req.body);
 })
 
 
