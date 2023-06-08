@@ -29,11 +29,10 @@ router.post('/login', async (req,res) => {
 
     if(isMatch){
         console.log('isMatch',isMatch);
-        const token = jwt.sign({username:username},secret);
         res.cookie("login_username",username,{
             maxAge:7 * MS_OF_DAY
         });
-        res.send(token);
+        res.send('success');
     }else {
         console.log('error',user.userPassword);
         throw new Error('User Not Found!');
@@ -68,8 +67,7 @@ router.get('/logout',
     res.send('退出登录~');
 })
 
-router.get('/user',
-    async (req, res)=>{
+router.get('/user', async (req, res)=>{
     const {login_username} = req.cookies;
     console.log('/user',req.cookies.username);
     const user = await User.findOne({
