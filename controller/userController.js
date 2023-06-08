@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const {expressjwt:expressJwt} = require('express-jwt');
+const {expressJwt:expressJwt} = require('express-jwt');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const {User} = require('../models/user');
 const {nanoid} = require('nanoid');
-
-const salt = bcrypt.genSaltSync(10);
 const secret = "WELCOME_TO_THE_SHOW";
+const salt = bcrypt.genSaltSync(10);
 const MS_OF_DAY = 1000 * 60 * 60 * 24;
 
     /*
@@ -19,14 +18,12 @@ const MS_OF_DAY = 1000 * 60 * 60 * 24;
 
 router.post('/login', async (req,res) => {
     const {username,password} = req.body;
+    const token = jwt.sign({username:username},secret);
     const user = await User.findOne({
-        where:{
-            username:username
-        }
+        where: {username:username}
     });
 
     const isMatch = user === null ||  bcrypt.compareSync(password,user.userPassword);
-
     if(isMatch){
         console.log('isMatch',isMatch);
         res.cookie("login_username",username,{
@@ -55,8 +52,6 @@ router.post('/register',(req,res) => {
     })
 })
 
-router.get('/home',(req, res) => {
-})
 
 router.get('/logout',
     (req,res)=> {
