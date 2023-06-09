@@ -75,5 +75,10 @@ router.get('/user', async (req, res)=>{
         res.send(value);
 })
 
+router.post('/addTeam',(req, res) => {
+    console.log(req.body);
+    res.send('success');
+})
+
 
 module.exports = router;
