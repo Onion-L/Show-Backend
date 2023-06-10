@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const {db} = require('./config/db');
 const userRouter = require('./controller/userController');
+const teamRouter = require('./controller/teamController');
 const cookieParser = require('cookie-parser');
 
 // 解析 application/json
@@ -18,6 +19,7 @@ app.use(cors());
 db.connected();
 //使用express router
 app.use(userRouter);
+app.use(teamRouter);
 
 const port = 3000;
 app.listen(port, () => {

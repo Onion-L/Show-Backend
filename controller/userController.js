@@ -16,10 +16,12 @@ const MS_OF_DAY = 1000 * 60 * 60 * 24;
     }))
     */
 
+//登录操作
 router.post('/login', async (req,res) => {
     const {username,password} = req.body;
-    const token = jwt.sign({username:username},secret);
+    // const token = jwt.sign({username:username},secret);
     const user = await User.findOne({
+        attributes:['id','userPassword'],
         where: {username:username}
     });
 
@@ -29,6 +31,7 @@ router.post('/login', async (req,res) => {
         res.cookie("login_username",username,{
             maxAge:7 * MS_OF_DAY
         });
+
         res.send('success');
     }else {
         console.log('error',user.userPassword);
@@ -36,6 +39,7 @@ router.post('/login', async (req,res) => {
     }
 })
 
+//注册用户
 router.post('/register',(req,res) => {
     const {username,password,area} = req.body;
     const cryptPwd = bcrypt.hashSync(password,salt);
@@ -52,7 +56,7 @@ router.post('/register',(req,res) => {
     })
 })
 
-
+//退出，cookie覆盖
 router.get('/logout',
     (req,res)=> {
     res.cookie('login_username',1,{
@@ -62,6 +66,7 @@ router.get('/logout',
     res.send('退出登录~');
 })
 
+//获取用户信息
 router.get('/user', async (req, res)=>{
     const {login_username} = req.cookies;
     console.log('/user',req.cookies.username);
@@ -75,10 +80,7 @@ router.get('/user', async (req, res)=>{
         res.send(value);
 })
 
-router.post('/addTeam',(req, res) => {
-    console.log(req.body);
-    res.send('success');
-})
+
 
 
 module.exports = router;
