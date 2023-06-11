@@ -1,37 +1,42 @@
 const express = require('express');
 const router = express.Router();
-const {expressJwt:expressJwt} = require('express-jwt');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const {User} = require('../models/user');
 const {nanoid} = require('nanoid');
-const secret = "WELCOME_TO_THE_SHOW";
-const salt = bcrypt.genSaltSync(10);
+const secretKey = "WELCOME_TO_THE_SHOW";
+const SALT = bcrypt.genSaltSync(10);
+const session = require('express-session')
 const MS_OF_DAY = 1000 * 60 * 60 * 24;
 
-    /*
-    router.use(expressJwt({
-        secret:'WELCOME_TO_THE_SHOW',
-        algorithms:['HS256']
-    }))
-    */
+//设置sessionID
+router.use(session({
+    secret:secretKey,
+    name:'sessionId',
+    resave: false,
+    saveUninitialized: false,
+    cookie:{
+        maxAge:7 * MS_OF_DAY,
+        httpOnly:false
+    }
+    })
+);
 
 //登录操作
 router.post('/login', async (req,res) => {
     const {username,password} = req.body;
-    // const token = jwt.sign({username:username},secret);
+
+    console.log('username',username)
     const user = await User.findOne({
-        attributes:['id','userPassword'],
-        where: {username:username}
+        where: {username}
     });
 
-    const isMatch = user === null ||  bcrypt.compareSync(password,user.userPassword);
-    if(isMatch){
-        console.log('isMatch',isMatch);
-        res.cookie("login_username",username,{
-            maxAge:7 * MS_OF_DAY
-        });
 
+    console.log('password',user.username);
+    const isMatch = user !== null &&  bcrypt.compareSync(password,user.userPassword);
+
+    if(isMatch){
+        req.session.sessionName = username;
+        console.log(req.session)
         res.send('success');
     }else {
         console.log('error',user.userPassword);
@@ -39,10 +44,19 @@ router.post('/login', async (req,res) => {
     }
 })
 
+//退出，cookie覆盖
+router.get('/logout', (req,res)=> {
+    res.cookie('sessionId',1,{
+        maxAge:-1
+    });
+    req.session.destroy();
+    res.send('退出登录~');
+})
+
 //注册用户
 router.post('/register',(req,res) => {
     const {username,password,area} = req.body;
-    const cryptPwd = bcrypt.hashSync(password,salt);
+    const cryptPwd = bcrypt.hashSync(password,SALT);
 
     User.create({
         username:username,
@@ -56,22 +70,13 @@ router.post('/register',(req,res) => {
     })
 })
 
-//退出，cookie覆盖
-router.get('/logout',
-    (req,res)=> {
-    res.cookie('login_username',1,{
-        maxAge:-1
-    });
-
-    res.send('退出登录~');
-})
-
 //获取用户信息
 router.get('/user', async (req, res)=>{
-    const {login_username} = req.cookies;
-    console.log('/user',req.cookies.username);
+    const sessionName = req.session.sessionName;
+    console.log('/user',req.session);
+
     const user = await User.findOne({
-        where:{username:login_username},
+        where:{username:sessionName},
     });
 
         console.log(user.dataValues);
@@ -79,8 +84,5 @@ router.get('/user', async (req, res)=>{
         const value = {username,userAccount,avatarUrl};
         res.send(value);
 })
-
-
-
 
 module.exports = router;

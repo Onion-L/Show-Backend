@@ -1,3 +1,9 @@
+/*
+*author:Onion-L
+* 队伍表查询，添加
+* params:teams,name,des description,maxNum,status,expireTime,username
+* */
+
 const express = require('express');
 const router = express.Router();
 const {Team} = require('../models/team');
