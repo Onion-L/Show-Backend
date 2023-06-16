@@ -68,6 +68,17 @@ router.get('/logout', (req,res)=> {
     res.send('退出登录~');
 })
 
+router.post('/updateUser',async (req,res) => {
+    /*console.log(req.body);
+    const {userAccount,id,avatarUrl,gender,phone,email,updatedAt,userArea,username} = req.body;
+
+    await User.update({
+        userAccount,avatarUrl,gender,phone,email,updatedAt,userArea,username
+    },{where:{id}}).then(_=>{
+        res.send('success');
+    })*/
+})
+
 //获取用户信息
 /*
 router.get('/user', async (req, res)=>{

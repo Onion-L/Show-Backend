@@ -17,14 +17,14 @@ router.get('/team',async (req, res) => {
 
 //添加队伍
 router.post('/addTeam',async (req, res) => {
-    const {name,status,maxNum,expireTime,description,username} = req.body;
+    const {name,status,maxNum,expireTime,description,userId} = req.body;
     await Team.create({
         name,
         description,
         maxNum,
         status,
         expireTime,
-        username
+        userId
     }).then(()=>{
         res.send('success');
     }).catch(error=>{
