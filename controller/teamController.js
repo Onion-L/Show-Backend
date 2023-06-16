@@ -11,7 +11,7 @@ const {Team} = require('../models/team');
 //查询队伍数据
 router.get('/team',async (req, res) => {
     const teams = await Team.findAll();
-    res.send(JSON.stringify(teams));
+    res.send(teams);
     }
 )
 

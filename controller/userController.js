@@ -24,33 +24,22 @@ router.use(session({
 //登录操作
 router.post('/login', async (req,res) => {
     const {username,password} = req.body;
-
-    console.log('username',username)
     const user = await User.findOne({
-        where: {username}
+        where: {username:username}
     });
 
-
-    console.log('password',user.username);
-    const isMatch = user !== null &&  bcrypt.compareSync(password,user.userPassword);
+    const {userAccount,id,userPassword,avatarUrl,gender,phone,email,createdAt,userArea} = user;
+    const isMatch = user &&  bcrypt.compareSync(password,userPassword);
+    const userData = {userAccount,id,avatarUrl,gender,phone,email,createdAt,userArea,username};
 
     if(isMatch){
-        req.session.sessionName = username;
+        req.session.sessionID = username;
         console.log(req.session)
-        res.send('success');
+        res.send(userData);
     }else {
         console.log('error',user.userPassword);
         throw new Error('User Not Found!');
     }
-})
-
-//退出，cookie覆盖
-router.get('/logout', (req,res)=> {
-    res.cookie('sessionId',1,{
-        maxAge:-1
-    });
-    req.session.destroy();
-    res.send('退出登录~');
 })
 
 //注册用户
@@ -70,9 +59,19 @@ router.post('/register',(req,res) => {
     })
 })
 
+//退出，cookie覆盖
+router.get('/logout', (req,res)=> {
+    res.cookie('sessionId',1,{
+        maxAge:-1
+    });
+    req.session.destroy();
+    res.send('退出登录~');
+})
+
 //获取用户信息
+/*
 router.get('/user', async (req, res)=>{
-    const sessionName = req.session.sessionName;
+    const sessionName = req.session.sessionID;
     console.log('/user',req.session);
 
     const user = await User.findOne({
@@ -80,9 +79,10 @@ router.get('/user', async (req, res)=>{
     });
 
         console.log(user.dataValues);
-        const {username,userAccount,avatarUrl} = user.dataValues;
-        const value = {username,userAccount,avatarUrl};
+        const {username,userAccount,avatarUrl,id,createdAt,gender} = user.dataValues;
+        const value = {username,userAccount,avatarUrl,id,createdAt,gender};
         res.send(value);
 })
+*/
 
 module.exports = router;
