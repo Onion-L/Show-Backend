@@ -3,9 +3,11 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const {User} = require('../models/user');
 const {nanoid} = require('nanoid');
+const session = require('express-session');
+const multer = require('multer');
+const upload = multer({dest:'uploads/'});
 const secretKey = "WELCOME_TO_THE_SHOW";
 const SALT = bcrypt.genSaltSync(10);
-const session = require('express-session')
 const MS_OF_DAY = 1000 * 60 * 60 * 24;
 
 //设置sessionID
@@ -30,11 +32,15 @@ router.post('/login', async (req,res) => {
 
     const {userAccount,id,userPassword,avatarUrl,gender,phone,email,createdAt,userArea} = user;
     const isMatch = user &&  bcrypt.compareSync(password,userPassword);
-    const userData = {userAccount,id,avatarUrl,gender,phone,email,createdAt,userArea,username};
+    const userData = {
+        userAccount,id,
+        avatarUrl:avatarUrl.toString(),gender,phone,email,createdAt,userArea,username
+    };
 
     if(isMatch){
         req.session.sessionID = username;
         console.log(req.session)
+        console.log(avatarUrl.toString());
         res.send(userData);
     }else {
         console.log('error',user.userPassword);
@@ -68,7 +74,8 @@ router.get('/logout', (req,res)=> {
     res.send('退出登录~');
 })
 
-router.post('/updateUser',async (req,res) => {
+router.post('/updateUser',upload.single('avatar'),async (req,res) => {
+    console.log(req.file);
     /*console.log(req.body);
     const {userAccount,id,avatarUrl,gender,phone,email,updatedAt,userArea,username} = req.body;
 
