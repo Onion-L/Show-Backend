@@ -21,10 +21,12 @@ const User = sequelize.define('users',{
         type: DataTypes.STRING
     },
     avatarUrl:{
-        type:DataTypes.STRING
+        type:DataTypes.STRING,
+        defaultValue:'https://pic3.zhimg.com/v2-96119b014a8b8579604f4ae269e4af26_r.jpg'
     },
     gender:{
-        type:DataTypes.TINYINT
+        type:DataTypes.TINYINT,
+        defaultValue:0
     },
     userPassword:{
         type:DataTypes.STRING

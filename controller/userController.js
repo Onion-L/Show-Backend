@@ -32,9 +32,10 @@ router.post('/login', async (req,res) => {
 
     const {userAccount,id,userPassword,avatarUrl,gender,phone,email,createdAt,userArea} = user;
     const isMatch = user &&  bcrypt.compareSync(password,userPassword);
+    console.log(gender)
     const userData = {
         userAccount,id,
-        avatarUrl:avatarUrl.toString(),gender,phone,email,createdAt,userArea,username
+        avatarUrl:avatarUrl,gender,phone,email,createdAt,userArea,username
     };
 
     if(isMatch){
@@ -74,8 +75,8 @@ router.get('/logout', (req,res)=> {
     res.send('退出登录~');
 })
 
-router.post('/updateUser',upload.single('avatar'),async (req,res) => {
-    console.log(req.file);
+router.post('/updateUser',async (req,res) => {
+    console.log(req.body);
     /*console.log(req.body);
     const {userAccount,id,avatarUrl,gender,phone,email,updatedAt,userArea,username} = req.body;
 
