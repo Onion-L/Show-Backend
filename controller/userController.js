@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const {User} = require('../models/user');
 const {nanoid} = require('nanoid');
 const session = require('express-session');
+const {Error} = require("sequelize");
 // const multer = require('multer');
 // const upload = multer({dest:'uploads/'});
 const secretKey = "WELCOME_TO_THE_SHOW";
@@ -62,7 +63,11 @@ router.post('/register',(req,res) => {
     }).then(()=>{
         res.send('success');
     }).catch(error=>{
-        throw new Error(error.message);
+        res.status(error.status || 500).json({
+            error:{
+                message: error.message
+            }
+        })
     })
 })
 
@@ -75,33 +80,32 @@ router.get('/logout', (req,res)=> {
     res.send('退出登录~');
 })
 
+//更新用户数据
 router.post('/updateUser',async (req,res) => {
     console.log(req.body);
-    /*console.log(req.body);
-    const {userAccount,id,avatarUrl,gender,phone,email,updatedAt,userArea,username} = req.body;
+    const {key,newValue,oldValue} = req.body;
+    console.log(key,newValue,oldValue);
+    if(newValue === oldValue) {
+        res.json({
+            error:{
+                message:'请输入新的用户名'
+            }
+        })
+    }
 
-    await User.update({
-        userAccount,avatarUrl,gender,phone,email,updatedAt,userArea,username
-    },{where:{id}}).then(_=>{
+    await User.update({[key]: newValue}, {
+        where: {[key]: oldValue}
+    }).then(_ => {
         res.send('success');
-    })*/
+    }).catch(err => {
+        res.status(err.status || 500).json({
+            error:{
+                message: 'hhhhhhhh'
+            }
+        })
+    })
 })
 
-//获取用户信息
-/*
-router.get('/user', async (req, res)=>{
-    const sessionName = req.session.sessionID;
-    console.log('/user',req.session);
 
-    const user = await User.findOne({
-        where:{username:sessionName},
-    });
-
-        console.log(user.dataValues);
-        const {username,userAccount,avatarUrl,id,createdAt,gender} = user.dataValues;
-        const value = {username,userAccount,avatarUrl,id,createdAt,gender};
-        res.send(value);
-})
-*/
 
 module.exports = router;
