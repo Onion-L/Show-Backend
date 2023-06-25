@@ -26,6 +26,7 @@ router.post('/addTeam',async (req, res) => {
         expireTime,
         userId
     }).then(()=>{
+        console.log('队伍创建成功~~');
         res.send('success');
     }).catch(error=>{
         throw new Error(error.message);

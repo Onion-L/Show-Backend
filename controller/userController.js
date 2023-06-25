@@ -85,24 +85,21 @@ router.post('/updateUser',async (req,res) => {
     console.log(req.body);
     const {key,newValue,oldValue} = req.body;
     console.log(key,newValue,oldValue);
-    if(newValue === oldValue) {
-        res.json({
-            error:{
-                message:'请输入新的用户名'
-            }
-        })
-    }
+  /*  try {
+        if(newValue === oldValue) {
+            throw new Error('error');
+        }
+    }catch (e) {
+        res.status(500).send(e.message);
+    }*/
+
 
     await User.update({[key]: newValue}, {
         where: {[key]: oldValue}
     }).then(_ => {
         res.send('success');
-    }).catch(err => {
-        res.status(err.status || 500).json({
-            error:{
-                message: 'hhhhhhhh'
-            }
-        })
+    }).catch(e =>{
+        res.status( 500);
     })
 })
 
